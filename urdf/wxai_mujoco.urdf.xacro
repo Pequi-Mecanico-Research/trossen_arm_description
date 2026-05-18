@@ -10,7 +10,7 @@
   <ros2_control name="MujocoSystem" type="system">
     <hardware>
       <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
-      <param name="mujoco_model">$(find trossen_arm_description)/urdf/mujoco/wxai_ros2control_scene.xml</param>
+      <param name="mujoco_model">$(find trossen_arm_description)/urdf/mujoco/wxai_ros2_control_scene.xml</param>
     </hardware>
 
     <!-- Junta da Base -->
