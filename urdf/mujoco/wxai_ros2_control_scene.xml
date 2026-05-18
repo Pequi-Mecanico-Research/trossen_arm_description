@@ -4,8 +4,8 @@
   Cena completa para uso com mujoco_ros2_control.
   robô + chão + iluminação.
 -->
-<mujoco model="wxai ros2control scene">
-  <include file="wxai_ros2control.xml"/>
+<mujoco model="wxai ros2_control scene">
+  <include file="wxai_ros2_control.xml"/>
 
   <statistic center="0 0 0.1" extent="0.6"/>
 
