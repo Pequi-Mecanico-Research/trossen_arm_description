@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="wxai">
+
+  <xacro:arg name="ros2_control_hardware_type" default="mujoco" />
+
+
+  <xacro:include filename="$(find trossen_arm_description)/urdf/wxai.urdf.xacro" />
+
+
+  <ros2_control name="MujocoSystem" type="system">
+    <hardware>
+      <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+      <param name="mujoco_model">$(find trossen_arm_description)/urdf/mujoco/wxai_ros2control_scene.xml</param>
+    </hardware>
+
+    <!-- Junta da Base -->
+    <joint name="joint_0">
+      <command_interface name="position"/>
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+
+    <!-- Junta do Ombro -->
+    <joint name="joint_1">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+
+    <!-- Junta do Cotovelo -->
+    <joint name="joint_2">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+
+    <!-- Juntas do Pulso -->
+    <joint name="joint_3">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+
+    <joint name="joint_4">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+
+    <!-- ========================================== -->
+    <!-- 3. CONFIGURAÇÃO DA GARRA (GRIPPER)         -->
+    <!-- ========================================== -->
+    <joint name="joint_5">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+
+    <joint name="left_carriage_joint">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+
+  </ros2_control>
+
+</robot>
