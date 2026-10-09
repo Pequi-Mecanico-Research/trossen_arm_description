@@ -11,6 +11,14 @@
     <hardware>
       <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
       <param name="mujoco_model">$(find trossen_arm_description)/urdf/mujoco/wxai_ros2_control_scene.xml</param>
+      <!-- Aplicada uma vez na inicialização; reset_world (sem "keyframe" na
+           request) volta para este mesmo estado, então o braço sempre
+           retorna à pose "ready" ao resetar o mundo. -->
+      <param name="initial_keyframe">ready</param>
+      <!-- Cameras are published by the CameraPlugin configured in
+           trossen_arm_moveit/config/mujoco_plugins.yaml. Disable the legacy auto-registration
+           so enable_cameras:=false really publishes no images. -->
+      <param name="auto_register_cameras">false</param>
     </hardware>
 
     <!-- Junta da Base -->

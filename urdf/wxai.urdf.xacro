@@ -9,6 +9,16 @@
   <xacro:arg name="ip_address"                      default="192.168.1.2"/>
   <xacro:arg name="base_link_frame"                 default="base_link"/>
 
+  <!-- [cameras] block start -->
+  <!-- D435i wrist + environment cameras: same URDF for real hardware and MuJoCo -->
+  <xacro:arg name="enable_cameras"                  default="true"/>
+  <xacro:arg name="wrist_camera_xyz"                default="0.05 -0.03 0.06"/>
+  <xacro:arg name="wrist_camera_rpy"                default="0 0.785398163 0"/>
+  <xacro:arg name="env_camera_parent"               default="base_link"/>
+  <xacro:arg name="env_camera_xyz"                  default="0.2 0 1.0"/>
+  <xacro:arg name="env_camera_rpy"                  default="0 1.047197551 0"/>
+  <!-- [cameras] block end -->
+
   <xacro:if value="$(arg use_world_frame)">
     <link name="world"/>
     <joint name="fixed" type="fixed">
@@ -21,6 +31,7 @@
 
   <xacro:include filename="$(find trossen_arm_description)/urdf/macros/_wxai.urdf.xacro" />
   <xacro:include filename="$(find trossen_arm_description)/urdf/macros/_common.urdf.xacro" />
+  <xacro:include filename="$(find trossen_arm_description)/urdf/peripherals/rs_d435i.urdf.xacro" />
 
   <xacro:trossen_black/>
 
@@ -30,5 +41,24 @@
     prefix="$(arg prefix)"
     ros2_control_hardware_type="$(arg ros2_control_hardware_type)"
     ip_address="$(arg ip_address)"/>
+
+  <!-- [cameras] block start: instantiation below -->
+  <xacro:if value="$(arg enable_cameras)">
+    <xacro:sensor_d435i
+      name="wrist_camera"
+      parent="$(arg prefix)link_6"
+      use_nominal_extrinsics="true">
+      <origin xyz="$(arg wrist_camera_xyz)" rpy="$(arg wrist_camera_rpy)"/>
+    </xacro:sensor_d435i>
+
+    <xacro:sensor_d435i
+      name="env_camera"
+      parent="$(arg env_camera_parent)"
+      use_nominal_extrinsics="true">
+      <origin xyz="$(arg env_camera_xyz)" rpy="$(arg env_camera_rpy)"/>
+    </xacro:sensor_d435i>
+
+  </xacro:if> <!-- enable_cameras -->
+  <!-- [cameras] block end -->
 
 </robot>

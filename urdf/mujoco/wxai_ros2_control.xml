@@ -26,6 +26,7 @@
 
   <asset>
     <material name="trossen_black" rgba="0.1 0.1 0.1 1"/>
+    <material name="aluminum" rgba="0.5 0.5 0.5 1"/> 
     <mesh name="base_link"      file="base_link.stl"/>
     <mesh name="link_1"         file="link_1.stl"/>
     <mesh name="link_2"         file="link_2.stl"/>
@@ -37,6 +38,7 @@
     <mesh name="carriage_left"  file="carriage_left.stl"/>
     <mesh name="gripper_left"   file="gripper_left.stl"/>
     <mesh name="gripper_right"  file="gripper_right.stl"/>
+    <mesh name="d435i_case"     file="../peripherals/realsense_d435i.stl" scale="0.001 0.001 0.001"/>
   </asset>
 
   <worldbody>
@@ -77,6 +79,14 @@
                   <geom class="collision" type="cylinder" size="0.029 0.05" pos="0 0 0" quat="1 0 1 0"/>
                   <geom class="collision" type="box" size="0.0125 0.094 0.031" pos="0.0685 0 0" quat="1 0 0 0"/>
                   <site name="ee_site" pos="0.156 0 0" size="0.001"/>
+                  <!-- [cameras] block start -->
+                  <body name="wrist_camera_mount" pos="0.05 -0.03 0.06" quat="0.923880 0 0.382683 0">
+                    <camera name="wrist_camera" fovy="58" mode="fixed" resolution="1280 720"
+                      pos="0.0106 0.0325 0.0125" quat="0.5 0.5 -0.5 -0.5"/>
+                    <geom class="visual" mesh="d435i_case" material="aluminum"
+                      pos="-0.001925 0 0" quat="0 0.707107 0.707107 0"/>
+                  </body>
+                  <!-- [cameras] block end -->
                   <body name="carriage_right" pos="0.0865 -0.023 0" gravcomp="1">
                     <inertial pos="0.00169015 0.00592793 0.00201817" quat="-0.370973 0.740886 -0.0847721 0.553427" mass="0.081271" diaginertia="4.29565e-05 3.87081e-05 2.21528e-05"/>
                     <joint name="right_carriage_joint" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.044" armature="0.1" frictionloss="0.1" actuatorgravcomp="true"/>
@@ -102,6 +112,16 @@
         </body>
       </body>
     </body>
+
+    <!-- [cameras] block start -->
+    <body name="env_camera_mount" pos="-0.2 0 1.0" quat="0.866025 0 0.5 0">
+      <camera name="env_camera" fovy="58" mode="fixed" resolution="1280 720"
+        pos="0.0106 0.0325 0.0125" quat="0.5 0.5 -0.5 -0.5"/>
+      <!-- Shifted behind the lens plane (X=0 here), same reasoning as wrist_camera above. -->
+      <geom class="visual" mesh="d435i_case" material="aluminum"
+        pos="-0.001925 0 0" quat="0 0.707107 0.707107 0"/>
+    </body>
+    <!-- [cameras] block end -->
   </worldbody>
 
   <!-- ── Mimic gripper: right segue left via tendon ───────── -->
@@ -109,13 +129,6 @@
     <joint joint1="right_carriage_joint" joint2="left_carriage_joint" polycoef="0 1 0 0 0"/>
   </equality>
 
-  <!--
-    ── Actuators position — compatíveis com ros2_control ──────
-    O mujoco_ros2_control mapeia cada <position actuator> para
-    uma command interface "position" no ros2_control.
-    O gripper usa left_carriage_joint como joint controlável;
-    right_carriage_joint é controlado via equality constraint acima.
-  -->
   <actuator>
     <position name="joint_0"      joint="joint_0"             kp="200"  kv="10" ctrlrange="-3.05433 3.05433" forcerange="-27 27"/>
     <position name="joint_1"      joint="joint_1"             kp="200"  kv="10" ctrlrange="0 3.14159"        forcerange="-27 27"/>

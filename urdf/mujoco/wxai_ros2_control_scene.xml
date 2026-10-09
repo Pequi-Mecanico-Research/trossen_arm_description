@@ -12,7 +12,11 @@
   <visual>
     <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
     <rgba haze="0.15 0.25 0.35 1"/>
-    <global azimuth="160" elevation="-20"/>
+    <!-- offwidth/offheight: MuJoCo's offscreen framebuffer defaults to 640x480; the wrist/env
+         D435i cameras in wxai_ros2_control.xml request 1280x720, which mujoco_ros2_control's
+         camera renderer can only grow into up to this declared size (mjr_resizeOffscreen is
+         capped by it). -->
+    <global azimuth="160" elevation="-20" offwidth="1280" offheight="720"/>
   </visual>
 
   <asset>
@@ -26,5 +30,33 @@
   <worldbody>
     <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
     <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
+
+    <!-- Cubos para teste de empilhamento. size = meia-aresta (0.02 = cubo de 4cm). -->
+    <body name="cube_1" pos="0.35 0.08 0.02">
+      <freejoint/>
+      <geom name="cube_1_geom" type="box" size="0.02 0.02 0.02" rgba="0.8 0.1 0.1 1" mass="0.05" friction="1 0.005 0.0001"/>
+    </body>
+    <body name="cube_2" pos="0.35 -0.08 0.02">
+      <freejoint/>
+      <geom name="cube_2_geom" type="box" size="0.02 0.02 0.02" rgba="0.1 0.1 0.8 1" mass="0.05" friction="1 0.005 0.0001"/>
+    </body>
   </worldbody>
+
+  <!--
+    Pose "ready" do braço (mesmos valores de joint do group_state "ready" em
+    wxai.srdf.xacro), garra aberta, cubos nas posições padrão da mesa.
+    qpos = [joint_0..5, right_carriage_joint, left_carriage_joint,
+            cube_1(x y z qw qx qy qz), cube_2(x y z qw qx qy qz)]  (nq=22)
+    Precisa dos 22 valores explícitos: uma keyframe com menos valores do que
+    nq (como a "home" herdada de wxai_ros2_control.xml) é preenchida com
+    zero pelo compilador do MuJoCo, não com a pose padrão do corpo — os
+    cubos iriam parar em (0,0,0) se essa keyframe fosse aplicada.
+  -->
+  <keyframe>
+    <key name="ready"
+         qpos="0 1.04719755 0.523598776 0.628318531 0 0 0.044 0.044
+               0.35 0.08 0.02 1 0 0 0
+               0.35 -0.08 0.02 1 0 0 0"
+         ctrl="0 1.04719755 0.523598776 0.628318531 0 0 0.044"/>
+  </keyframe>
 </mujoco>
